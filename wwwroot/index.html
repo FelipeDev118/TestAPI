@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TestAPI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header role="banner">
+            <h1 class="logo-neon">Test<span>API</span></h1>
+            <p class="status-sistema" aria-live="polite">// PROTOCOLO DE VARREDURA SOB DEMANDA ATIVO</p>
+        </header>
+
+        <section class="control-panel" aria-label="Painel de Teste de APIs">
+            
+            <div class="form-group">
+                <input 
+                    type="text" 
+                    id="input-nome" 
+                    placeholder="Nome da API" 
+                    autocomplete="off"
+                    aria-label="Nome da API comercial">
+
+                <input 
+                    type="url" 
+                    id="input-url" 
+                    placeholder="URL de Validação" 
+                    autocomplete="off"
+                    aria-label="URL completa da API">
+            </div>
+
+            <button id="btn-escanear" onclick="testarApiUnica()">
+                TESTAR ENDPOINT AGORA
+            </button>
+
+        </section>
+
+        <main id="painel-cards" class="grid-cards" aria-label="Painel de Resultados">
+            </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Ignorar pastas de build do .NET
+bin/
+obj/
+
+# Ignorar configurações locais do VS Code
+.vscode/
+.DS_Store

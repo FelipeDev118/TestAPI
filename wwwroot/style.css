@@ -1,0 +1,222 @@
+/* ==========================================================================
+   RESET & CONFIGURAÇÕES GERAIS (Identidade Cyberpunk / Black Piano)
+   ========================================================================== */
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #0a0a0c; /* Black Piano Profundo */
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   HEADER & LOGO NEON
+   ========================================================================== */
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.logo-neon {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px #8b5cf6, 0 0 20px #8b5cf6, 0 0 40px #8b5cf6;
+}
+
+.logo-neon span {
+    color: #a78bfa;
+    text-shadow: 0 0 10px #d8b4fe, 0 0 20px #d8b4fe;
+}
+
+.status-sistema {
+    font-family: 'Courier New', Courier, monospace;
+    color: #6d28d9;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   PAINEL DE CONTROLE / FORMULÁRIO (Refatorado para Responsividade)
+   ========================================================================== */
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    width: 100%;
+}
+
+.form-group {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    max-width: 700px;
+}
+
+/* Estilização Cyberpunk para os Inputs */
+.form-group input {
+    padding: 0.8rem 1.2rem;
+    background: #111116; /* Grafite Black Piano */
+    border: 1px solid #2e1065; /* Roxo escuro */
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Distribuição de espaço proporcional entre os campos */
+#input-nome {
+    flex: 1;
+}
+
+#input-url {
+    flex: 2;
+}
+
+/* Efeito de foco luminoso Neon ao digitar */
+.form-group input:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+    background: #14141a;
+}
+
+/* Customização dos Placeholders para manter o contraste legível */
+.form-group input::placeholder {
+    color: #4b5563;
+}
+
+/* Botão de Ação */
+#btn-escanear {
+    background: transparent;
+    color: #a78bfa;
+    border: 2px solid #8b5cf6;
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+}
+
+#btn-escanear:hover:not(:disabled) {
+    background-color: #8b5cf6;
+    color: #fff;
+    box-shadow: 0 0 25px #8b5cf6;
+    transform: scale(1.02);
+}
+
+#btn-escanear:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+/* Estado visual de bloqueado quando o JS estiver processando o teste */
+#btn-escanear:disabled {
+    border-color: #4b5563;
+    color: #6b7280;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ==========================================================================
+   GRID DE CARDS RESPONSIVO
+   ========================================================================== */
+.grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* ==========================================================================
+   ESTILIZAÇÃO DOS CARDS (Estados do Semáforo)
+   ========================================================================== */
+.card {
+    background: #111116;
+    border: 1px solid #2e1065;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.card p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    word-break: break-all;
+    margin-bottom: 1rem;
+}
+
+.badge-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 50px;
+    text-transform: uppercase;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Variações do Semáforo */
+.card.status-aguardando { border-color: #8b5cf6; box-shadow: 0 0 10px rgba(139, 92, 246, 0.1); }
+.card.status-aguardando .badge-status { background: rgba(139, 92, 246, 0.2); color: #c084fc; }
+
+.card.status-processando { border-color: #eab308; box-shadow: 0 0 15px rgba(234, 179, 8, 0.3); }
+.card.status-processando .badge-status { background: rgba(234, 179, 8, 0.2); color: #fef08a; }
+
+.card.status-aberta { border-color: #22c55e; box-shadow: 0 0 20px rgba(34, 197, 94, 0.4); }
+.card.status-aberta .badge-status { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+
+.card.status-fechada { border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+.card.status-fechada .badge-status { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+
+/* ==========================================================================
+   MEDIA QUERIES (Quebras Responsivas para Dispositivos Móveis)
+   ========================================================================== */
+@media (max-width: 640px) {
+    /* Força os inputs a empilharem verticalmente em celulares e tablets pequenos */
+    .form-group {
+        flex-direction: column;
+    }
+    
+    .form-group input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+    .logo-neon {
+        font-size: 2.2rem;
+    }
+    #btn-escanear {
+        width: 100%;
+        padding: 1rem;
+    }
+}
