@@ -25,13 +25,10 @@ namespace TestAPI
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    // ===== AJUSTE DE INFRAESTRUTURA PARA CLOUD (RENDER) =====
-                    // Captura a variável de ambiente 'PORT' injetada dinamicamente pelo servidor da Render.
-                    // Se estiver rodando localmente no Mac, ela virá nula, então usamos a porta 5000 como fallback.
-                    string porta = System.Environment.GetEnvironmentVariable("PORT") ?? "5000";
-
-                    // Configura o servidor interno Kestrel para escutar na porta correta, aceitando conexões de fora
-                    webBuilder.UseUrls($"http://*:{porta}");
+                    // ===== AJUSTE PARA CONTAINERIZAÇÃO (DOCKER) =====
+                    // No ambiente isolado do Docker, travamos o Kestrel na porta interna 5000.
+                    // O Dockerfile expõe essa porta e a Render faz o mapeamento do tráfego externo para ela.
+                    webBuilder.UseUrls("http://*:5000");
 
                     // Vincula a classe Startup para desenhar a esteira de Middlewares
                     webBuilder.UseStartup<Startup>();
