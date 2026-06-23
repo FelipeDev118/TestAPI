@@ -65,7 +65,13 @@ namespace TestAPI
             // Middleware 3: Executa o destino final, enviando a requisição para dentro do MonitorController
             app.UseEndpoints(endpoints =>
             {
+                // Mapeia os endpoints dos nossos Controllers (como o /api/monitor)
                 endpoints.MapControllers();
+
+                // ===== SOLUÇÃO PARA O LINK RAIZ EM PRODUÇÃO (FALLBACK) =====
+                // Caso a requisição bata na barra pura (/) e não seja interceptada pelos arquivos estáticos,
+                // força o ecossistema do .NET a entregar o index.html por padrão, evitando o erro HTTP 404.
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }
