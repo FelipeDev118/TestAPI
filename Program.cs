@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.IO; // Necessário para o Directory.GetCurrentDirectory()
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
 namespace TestAPI
@@ -9,7 +10,7 @@ namespace TestAPI
     /// </summary>
     public class Program
     {
-        // Método estático principal - O primeiro a ser executado pelo sistema operacional (Igual ao Java public static void main)
+        // Método estático principal - O primeiro a ser executado pelo sistema operacional
         public static void Main(string[] args)
         {
             // Constrói o Host configurado e inicia o servidor Web para escutar requisições HTTP
@@ -18,16 +19,18 @@ namespace TestAPI
 
         /// <summary>
         /// Configura os padrões do Host Web da aplicação (Logs, variáveis de ambiente e o servidor web Kestrel).
-        /// Equivalente à inicialização oculta do SpringApplication.run() do Java.
         /// </summary>
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    // ===== AJUSTE PARA CONTAINERIZAÇÃO (DOCKER) =====
+                    // ===== RESOLUÇÃO DE DIRETÓRIO PARA DOCKER (PRODUÇÃO) =====
+                    // Força o .NET a usar o diretório atual de execução como raiz do conteúdo.
+                    // Isso impede que o Kestrel fique cego e perca a pasta wwwroot de vista no Linux.
+                    webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
+
                     // No ambiente isolado do Docker, travamos o Kestrel na porta interna 5000.
-                    // O Dockerfile expõe essa porta e a Render faz o mapeamento do tráfego externo para ela.
                     webBuilder.UseUrls("http://*:5000");
 
                     // Vincula a classe Startup para desenhar a esteira de Middlewares
