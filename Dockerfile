@@ -2,28 +2,30 @@
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build-env
 WORKDIR /app
 
-# Copia o arquivo de projeto e restaura as dependências
+# Copia o arquivo de projeto e restaura as dependências do NuGet
 COPY *.csproj ./
 RUN dotnet restore
 
-# Copia o restante dos arquivos e compila a aplicação em modo Release
+# Copia o restante dos arquivos do projeto
 COPY . ./
-RUN dotnet publish -c Release -o out
 
-# ===== CORREÇÃO DO 404: CÓPIA GARANTIDA DO FRONTEND =====
-# Garante que a pasta wwwroot seja fisicamente injetada na pasta de publicação final do container
-RUN cp -r wwwroot ./out/wwwroot
+# Compila a aplicação e publica os binários direto na pasta 'out'
+RUN dotnet publish -c Release -o out
 
 # ===== ESTÁGIO 2: EXECUÇÃO (RUNTIME) =====
 FROM mcr.microsoft.com/dotnet/aspnet:3.1
 WORKDIR /app
 
-# Copia os arquivos compilados do primeiro estágio (incluindo agora a wwwroot)
+# Copia os arquivos compilados e a estrutura do estágio anterior
 COPY --from=build-env /app/out .
 
-# Expõe a porta que o ASP.NET vai escutar de dentro do contêiner
+# Garante de forma nativa a cópia limpa do Front-end (wwwroot) para a execução
+COPY --from=build-env /app/wwwroot ./wwwroot
+
+# Expõe a porta interna do container para a Render fazer o roteamento
 EXPOSE 5000
 ENV ASPNETCORE_URLS=http://*:5000
 
-# Comando para iniciar a aplicação
-ENTRYPOINT ["dotnet", "TestAPI.dll"]
+# ===== AJUSTE DA DLL ALVO =====
+# Inicializa o servidor usando a DLL real gerada pelo VerificadorApi.csproj
+ENTRYPOINT ["dotnet", "VerificadorApi.dll"]
