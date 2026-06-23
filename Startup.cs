@@ -46,7 +46,12 @@ namespace TestAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            // Middleware 1: Entrega arquivos físicos estáticos da pasta 'wwwroot' (HTML, CSS, JS)
+            // ===== ENGENHARIA DE ARQUIVOS ESTÁTICOS NA NUVEM =====
+            // REGRA DE OURO: UseDefaultFiles DEVE vir obrigatoriamente antes de UseStaticFiles.
+            // Avisa ao Kestrel para buscar por arquivos padrão (como 'index.html') quando a URL raiz (/) for chamada.
+            app.UseDefaultFiles();
+
+            // Entrega arquivos físicos estáticos da pasta 'wwwroot' (HTML, CSS, JS)
             // Se a requisição pedir pelo index.html, ela para aqui e não sobrecarrega o roteamento lógico.
             app.UseStaticFiles();
 
