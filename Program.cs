@@ -25,6 +25,14 @@ namespace TestAPI
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    // ===== AJUSTE DE INFRAESTRUTURA PARA CLOUD (RENDER) =====
+                    // Captura a variável de ambiente 'PORT' injetada dinamicamente pelo servidor da Render.
+                    // Se estiver rodando localmente no Mac, ela virá nula, então usamos a porta 5000 como fallback.
+                    string porta = System.Environment.GetEnvironmentVariable("PORT") ?? "5000";
+
+                    // Configura o servidor interno Kestrel para escutar na porta correta, aceitando conexões de fora
+                    webBuilder.UseUrls($"http://*:{porta}");
+
                     // Vincula a classe Startup para desenhar a esteira de Middlewares
                     webBuilder.UseStartup<Startup>();
                 });
