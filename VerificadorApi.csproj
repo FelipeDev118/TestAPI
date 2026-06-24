@@ -2,13 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 
-    <AssemblyName>TestAPI</AssemblyName>
-    <RootNamespace>TestAPI</RootNamespace>
+    <AssemblyName>VerificadorApi</AssemblyName>
+    <RootNamespace>VerificadorApi</RootNamespace>
   </PropertyGroup>
 
 </Project>
