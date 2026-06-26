@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http; // OBRIGATÓRIO: Necessário para usar o SendFileAsync
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -68,10 +69,22 @@ namespace TestAPI
                 // Mapeia os endpoints dos nossos Controllers (como o /api/monitor)
                 endpoints.MapControllers();
 
-                // ===== SOLUÇÃO PARA O LINK RAIZ EM PRODUÇÃO (FALLBACK) =====
-                // Caso a requisição bata na barra pura (/) e não seja interceptada pelos arquivos estáticos,
-                // força o ecossistema do .NET a entregar o index.html por padrão, evitando o erro HTTP 404.
-                endpoints.MapFallbackToFile("index.html");
+                // ===== SOLUÇÃO DEFINITIVA PARA O LINK RAIZ EM PRODUÇÃO (XEQUE-MATE) =====
+                // Força o Kestrel a buscar o index.html diretamente do caminho físico do WebRoot (wwwroot)
+                // e injetar o conteúdo na resposta HTTP, eliminando o erro 404 de roteamento no Linux.
+                endpoints.MapGet("/", async context =>
+                {
+                    context.Response.ContentType = "text/html";
+                    await context.Response.SendFileAsync(System.IO.Path.Combine(env.WebRootPath, "index.html"));
+                });
+
+                // Caso o usuário tente acessar qualquer outra rota de subnível inválida,
+                // faz o fallback injetando o index.html direto do disco por segurança.
+                endpoints.MapFallback(async context =>
+                {
+                    context.Response.ContentType = "text/html";
+                    await context.Response.SendFileAsync(System.IO.Path.Combine(env.WebRootPath, "index.html"));
+                });
             });
         }
     }
