@@ -1,0 +1,29 @@
+# Integracao continua: compila a imagem de producao, sobe o container e roda o smoke test.
+# O build acontece DENTRO do Dockerfile (SDK do .NET na imagem), entao o runner nao
+# precisa de .NET instalado - o que roda aqui e exatamente o que vai para producao.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-e-smoke:
+    name: Build + smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build da imagem
+        run: docker build -t testapi .
+
+      - name: Sobe o container
+        run: docker run -d --name testapi -p 5000:5000 testapi
+
+      - name: Smoke test (pagina, SSRF e caminho feliz)
+        run: ./scripts/smoke-test.sh http://localhost:5000
+
+      - name: Logs do container
+        if: always()
+        run: docker logs testapi

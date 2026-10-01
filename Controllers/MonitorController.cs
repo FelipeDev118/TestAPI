@@ -19,9 +19,10 @@ namespace TestAPI.Controllers
         // Evita dar 'new MonitorService()' dentro do método, desacoplando o código.
         private readonly MonitorService _monitorService;
 
-        public MonitorController()
+        // O container de DI do ASP.NET Core entrega a instância registrada no Startup
+        public MonitorController(MonitorService monitorService)
         {
-            _monitorService = new MonitorService();
+            _monitorService = monitorService;
         }
 
         /// <summary>
@@ -41,9 +42,10 @@ namespace TestAPI.Controllers
 
             try
             {
-                // NOTA DE SECURITY: O C# tenta mapear os dados do JSON para a classe 'ApiFoco'.
-                // Ao preencher a propriedade 'Url', o 'set' personalizado dispara o ArgumentException
-                // caso o usuário tenha digitado "localhost", "127.0.0.1" ou formatos maliciosos.
+                // NOTA DE SECURITY: a validação roda AQUI, dentro do try, e não no setter do modelo.
+                // No setter ela disparava durante a desserialização do JSON, fora deste try/catch,
+                // e o usuário recebia HTTP 500 vazio em vez do 400 com o motivo.
+                await ValidadorDeAlvo.ValidarAsync(apiDigitada);
 
                 // O nosso serviço espera uma estrutura de lista, encapsulamos o objeto único
                 var listaTemporaria = new List<ApiFoco> { apiDigitada };

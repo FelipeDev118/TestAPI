@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http; // OBRIGATÓRIO: Necessário para usar o SendFileAsync
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TestAPI.Services;
 
 namespace TestAPI
 {
@@ -22,6 +23,10 @@ namespace TestAPI
         {
             // Adiciona o suporte para controllers focados em APIs REST (otimiza performance ignorando Views Razor)
             services.AddControllers();
+
+            // Uma instância para a aplicação inteira: o serviço não guarda estado por requisição
+            // e o HttpClient dentro dele já é compartilhado de propósito.
+            services.AddSingleton<MonitorService>();
 
             // ===== SESSÃO SECURITY: POLÍTICA DE CORS =====
             // Permite que o JavaScript contido no navegador interaja com este backend

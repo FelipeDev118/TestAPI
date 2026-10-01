@@ -11,7 +11,10 @@ namespace TestAPI.Services
     {
         // BOA PRÁTICA: HttpClient único e estático evita o esgotamento de portas (Socket Exhaustion).
         // No Java, você veria um comportamento similar ao gerenciar conexões com o OkHttpClient ou RestTemplate como Singletons.
-        private static readonly HttpClient _clienteHttp = new HttpClient();
+        // SECURITY: redirecionamento automático DESLIGADO. Senão uma URL pública validada
+        // responderia "302 -> http://169.254.169.254/" e o HttpClient seguiria sozinho,
+        // furando o ValidadorDeAlvo. Um 3xx já prova que o servidor está no ar.
+        private static readonly HttpClient _clienteHttp = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
 
         public async Task<List<ApiFoco>> ExecutarVarreduraAsync(List<ApiFoco> listaApis)
         {
@@ -60,10 +63,16 @@ namespace TestAPI.Services
                         // Dispara a requisição HTTP passando o token de segurança
                         using (HttpResponseMessage resposta = await _clienteHttp.SendAsync(requisicao, cts.Token))
                         {
+                            int codigo = (int)resposta.StatusCode;
                             if (resposta.IsSuccessStatusCode)
                             {
                                 api.Status = StatusSemaforo.Aberta;
-                                api.MensagemRetorno = $"Online. Código de resposta: {(int)resposta.StatusCode}";
+                                api.MensagemRetorno = $"Online. Código de resposta: {codigo}";
+                            }
+                            else if (codigo >= 300 && codigo < 400)
+                            {
+                                api.Status = StatusSemaforo.Aberta;
+                                api.MensagemRetorno = $"Online. Redireciona (código {codigo}) para {resposta.Headers.Location}";
                             }
                             else
                             {
